@@ -108,7 +108,7 @@ def Plot_CreatedVSCompletedTicket(data, data2, date, output_path):
                     axis_text=element_text(face='italic'),
                     plot_title=element_text(face='bold',
                                             size=12)))
-    plot.save(output_path + "/Numer_of_Tickets_Created_vs_Completed.png", height=6, width=10)
+    plot.save(output_path + "/Number_of_Tickets_Created_vs_Completed.png", height=6, width=10)
 
 def Plot_Workload(all_data, output_path):
     all_tickets = all_data.sum(axis=1)
@@ -138,6 +138,38 @@ def Plot_Workload(all_data, output_path):
                     plot_title=element_text(face='bold',
                                             size=12)))
     plot.save(output_path + '/Workload.png', height=6, width=len(dates_list)+2)
+
+def plot_month_workload(data, output_path):
+    ## Add this months trend - different lines for different ticket types
+    Sum_ticketstypes = data.sum(axis=1)
+    upper_limit = max(Sum_ticketstypes)
+
+    data_date = data.Date.str.replace(r'2021$', '', regex=True) # remove year
+    data.drop(data.columns[0],axis=1,inplace=True) # drop date column in data df
+    data = pd.concat([data_date, data], axis=1) # join new date format
+
+    # Keep the order the dates are in at the moment, so its not alphabetical
+    data.sort_values(by='Date').reset_index(drop = True)
+    data['Date'] = pd.Categorical(data.Date, categories=pd.unique(data.Date))
+
+    df  = pd.melt(data, id_vars=['Date'])
+
+    plot = (ggplot(df, aes(x = 'Date', y = 'value', color = 'variable', group = 1))
+            + geom_line()
+            + geom_point()
+            + facet_grid('variable ~ .')
+            + scale_y_continuous(expand=(0,0,0,1), breaks=range(0, upper_limit))
+            + labs(x = "", y='', color = " ",
+                    title = "Months Workload")
+            + theme_classic()
+            + theme(text=element_text(family='DejaVu Sans',
+                                    size=9),
+                    axis_title=element_text(face='bold'),
+                    axis_text_x=element_text(rotation=45, hjust=1),
+                    plot_title=element_text(face='bold',
+                                            size=12)))
+                                            
+    plot.save(output_path +'/Months_workload.png', height=10, width=18)
 
 def Plot_resolution_SLAs(data,output_path):
     data_resolve = data
@@ -317,6 +349,7 @@ def main():
     # Plot_CompletedTicket(resolved_data, date, output_path)
     Plot_CreatedVSCompletedTicket(created_data,resolved_data, date, output_path)
     Plot_Workload(all_data, output_path)
+    plot_month_workload(created_data, output_path)
     Plot_resolution_SLAs(data_sla_resolve, output_path)
     Plot_respond_SLAs(data_sla_respond, output_path)
     plot_currentstatus(data_current_status, output_path)
@@ -324,4 +357,38 @@ def main():
 if __name__ == "__main__":
 
     main()
+
+def plot_month_workload(data, output_path):
+    ## Add this months trend - different lines for different ticket types
+    Sum_ticketstypes = data.sum(axis=1)
+    upper_limit = max(Sum_ticketstypes)
+
+    data_date = data.Date.str.replace(r'2021$', '', regex=True) # remove year
+    data.drop(data.columns[0],axis=1,inplace=True) # drop date column in data df
+    data = pd.concat([data_date, data], axis=1) # join new date format
+
+    Sum_ticketstypes = data.sum(axis=0)
+    Sum_all = Sum_ticketstypes.sum(axis=1)
+    # Keep the order the dates are in at the moment, so its not alphabetical
+    data.sort_values(by='Date').reset_index(drop = True)
+    data['Date'] = pd.Categorical(data.Date, categories=pd.unique(data.Date))
+
+    df  = pd.melt(data, id_vars=['Date'])
+
+    plot = (ggplot(df, aes(x = 'Date', y = 'value', color = 'variable', group = 1))
+            + geom_line()
+            + geom_point()
+            + facet_grid('variable ~ .')
+            + scale_y_continuous(expand=(0,0,0,1), breaks=range(0, upper_limit))
+            + labs(x = "", y='', color = " ",
+                    title = "Months Workload")
+            + theme_classic()
+            + theme(text=element_text(family='DejaVu Sans',
+                                    size=9),
+                    axis_title=element_text(face='bold'),
+                    axis_text_x=element_text(rotation=45, hjust=1),
+                    plot_title=element_text(face='bold',
+                                            size=12)))
+                                            
+    plot.save(output_path +'/Months_workload.png', height=10, width=18)
 
