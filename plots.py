@@ -80,7 +80,7 @@ def Plot_CreatedVSCompletedTicket(data, data2, date, output_path):
     Sum_ticketstypes_completed.columns = ['Number of tickets completed']
     # join the table and make side by side bar plot
     Sum_ticketstypes = pd.concat([Sum_ticketstypes_created, Sum_ticketstypes_completed], axis=1)
-    Sum_ticketstypes.index = ['Submit a request\nor incident', 'Ask a\nquestion', 'Emailed\nrequest','Standard\nReanalysis', 'Urgent\nReanalysis']
+    Sum_ticketstypes.index = ['Submit a request\nor incident', 'Ask a\nquestion', 'Emailed\nrequest','Standard\nReanalysis', 'Urgent\nReanalysis', 'Inform\nus']
     #plot = Sum_ticketstypes.plot.bar(rot=0, title=date, color=['blue','darkgreen'])
     #plot.figure.savefig(output_path + "/Numer_of_Tickets_Created_vs_Completed.png",  bbox_inches = "tight") # gets plot and saves it to png
 
@@ -151,7 +151,6 @@ def plot_month_workload(data, output_path):
 
     plot = (ggplot(df, aes(x = 'Date', y = 'value', color = 'variable', group = 1))
             + geom_line()
-            + geom_point()
             + facet_grid('variable ~ .')
             + scale_y_continuous(expand=(0,0,0,1), breaks=range(0, upper_limit))
             + labs(x = "", y='', color = " ",
