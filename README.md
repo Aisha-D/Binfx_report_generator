@@ -18,11 +18,20 @@ Set a scheduler to run on the first of every month to:
 In the **root** folder of project:
 1. Run plots .py to generate plots
 
+    `python3 code/plots.py -m data/YYMM -a data/all_data -d 'M YYYY'`
+
+    e.g
+
     `python3 code/plots.py -m data/2101 -a data/all_data -d 'Jan 2021'`
 
 2. Run doc_report.py to generate report
 
-    `python3 code/doc_report.py -p data/2101`
+    `python3 code/doc_report.py -p data/YYMM`
+
+    e.g
+
+    python3 code/doc_report.py -p data/2101
+
 
 ## Data
 
