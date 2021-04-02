@@ -30,7 +30,7 @@ In the **root** folder of project:
 
     e.g
 
-    python3 code/doc_report.py -p data/2101
+    `python3 code/doc_report.py -p data/2101`
 
 
 ## Data
