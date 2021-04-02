@@ -43,7 +43,6 @@ def Plot_CreatedTicket(data, date, output_path):
     Sum_ticketstypes = pd.Series.to_frame(Sum_ticketstypes)
     Sum_ticketstypes = Sum_ticketstypes.drop('Date')
     Sum_ticketstypes.columns = ['Number of tickets raised']
-    print(Sum_ticketstypes)
     Sum_ticketstypes.index = ['Submit a request\nor incident', 'Ask a\nquestion', 'Emailed\nrequest','Standard\nReanalysis', 'Urgent\nReanalysis']
     plot = Sum_ticketstypes.plot.bar(rot=0, title=date)
     plot.figure.savefig(output_path + "/Numer_of_Tickets_Raised.png",  bbox_inches = "tight") # gets plot and saves it to png
@@ -58,7 +57,6 @@ def Plot_CompletedTicket(data, date, output_path):
     Sum_ticketstypes = pd.Series.to_frame(Sum_ticketstypes)
     Sum_ticketstypes = Sum_ticketstypes.drop('Date')
     Sum_ticketstypes.columns = ['Number of tickets completed']
-    print(Sum_ticketstypes)
     Sum_ticketstypes.index = ['Submit a request\nor incident', 'Ask a\nquestion', 'Emailed\nrequest','Standard\nReanalysis', 'Urgent\nReanalysis']
     plot = Sum_ticketstypes.plot.bar(rot=0, title=date,color='darkgreen')
     plot.figure.savefig(output_path + "/Numer_of_Tickets_Completed.png",  bbox_inches = "tight") # gets plot and saves it to png
@@ -75,13 +73,11 @@ def Plot_CreatedVSCompletedTicket(data, data2, date, output_path):
     Sum_ticketstypes_created = pd.Series.to_frame(Sum_ticketstypes_created)
     Sum_ticketstypes_created = Sum_ticketstypes_created.drop('Date')
     Sum_ticketstypes_created.columns = ['Number of tickets created']
-    print(Sum_ticketstypes_created)
     # make a table of completed ticket types
     Sum_ticketstypes_completed = data2.sum(axis=0)
     Sum_ticketstypes_completed = pd.Series.to_frame(Sum_ticketstypes_completed)
     Sum_ticketstypes_completed = Sum_ticketstypes_completed.drop('Date')
     Sum_ticketstypes_completed.columns = ['Number of tickets completed']
-    print(Sum_ticketstypes_completed)
     # join the table and make side by side bar plot
     Sum_ticketstypes = pd.concat([Sum_ticketstypes_created, Sum_ticketstypes_completed], axis=1)
     Sum_ticketstypes.index = ['Submit a request\nor incident', 'Ask a\nquestion', 'Emailed\nrequest','Standard\nReanalysis', 'Urgent\nReanalysis']
@@ -95,7 +91,6 @@ def Plot_CreatedVSCompletedTicket(data, data2, date, output_path):
     # melt table to long so that each x variable has two x rows but for different groups
     Sum_ticketstypes = pd.melt(Sum_ticketstypes, id_vars=['Types'], value_vars=['Tickets created','Tickets completed'])
     Sum_ticketstypes.value = Sum_ticketstypes.value.astype('int64')
-    print(Sum_ticketstypes)
 
     plot = (ggplot(Sum_ticketstypes, aes(x = 'Types', y = 'value', fill = 'variable'))
             + geom_bar(stat = "identity", position = 'dodge')
@@ -191,7 +186,6 @@ def Plot_resolution_SLAs(data,output_path):
     data_resolve.Time_to_resolution = data_resolve.Time_to_resolution.astype('int64')
     data_resolve.dtypes
     upper_limit = max(data_resolve.Time_to_resolution)
-    print(data_resolve)
 
 
     plot = (ggplot(data_resolve, aes(x = 'Ticket_type', y = 'Time_to_resolution', fill = 'Met_vs_Breached'))
@@ -229,7 +223,6 @@ def Plot_respond_SLAs(data,output_path):
     data_respond.Time_to_respond = data_respond.Time_to_respond.astype('int64')
     data_respond.dtypes
     upper_limit = max(data_respond.Time_to_respond)
-    print(data_respond)
 
     plot = (ggplot(data_respond, aes(x = 'Ticket_type', y = 'Time_to_respond', fill = 'Met_vs_Breached'))
             + geom_bar(stat = "identity", position = 'dodge')
@@ -301,7 +294,6 @@ def plot_currentstatus(data, output_path):
                                             size=12)))
     plot.save(output_path +'/Current_Statuses.png', height=6, width=15)
 
-
 ## Run functions
 def main():
 
@@ -357,38 +349,3 @@ def main():
 if __name__ == "__main__":
 
     main()
-
-def plot_month_workload(data, output_path):
-    ## Add this months trend - different lines for different ticket types
-    Sum_ticketstypes = data.sum(axis=1)
-    upper_limit = max(Sum_ticketstypes)
-
-    data_date = data.Date.str.replace(r'2021$', '', regex=True) # remove year
-    data.drop(data.columns[0],axis=1,inplace=True) # drop date column in data df
-    data = pd.concat([data_date, data], axis=1) # join new date format
-
-    Sum_ticketstypes = data.sum(axis=0)
-    Sum_all = Sum_ticketstypes.sum(axis=1)
-    # Keep the order the dates are in at the moment, so its not alphabetical
-    data.sort_values(by='Date').reset_index(drop = True)
-    data['Date'] = pd.Categorical(data.Date, categories=pd.unique(data.Date))
-
-    df  = pd.melt(data, id_vars=['Date'])
-
-    plot = (ggplot(df, aes(x = 'Date', y = 'value', color = 'variable', group = 1))
-            + geom_line()
-            + geom_point()
-            + facet_grid('variable ~ .')
-            + scale_y_continuous(expand=(0,0,0,1), breaks=range(0, upper_limit))
-            + labs(x = "", y='', color = " ",
-                    title = "Months Workload")
-            + theme_classic()
-            + theme(text=element_text(family='DejaVu Sans',
-                                    size=9),
-                    axis_title=element_text(face='bold'),
-                    axis_text_x=element_text(rotation=45, hjust=1),
-                    plot_title=element_text(face='bold',
-                                            size=12)))
-                                            
-    plot.save(output_path +'/Months_workload.png', height=10, width=18)
-
