@@ -41,12 +41,12 @@ current (open) ticket file (suffix EMEE) is pulled from search issue. Data requi
 ├── Binfx_Service_Reports
     ├── data
     │   ├── Created_requests_per_day_for_the _month.tsv
-    |   ├── Requested_completed_per_day_for_the_month
-    |   ├── Breached_SLAs_time_to_respond.tsv
-    |   ├── Breached_SLAs_time_to_resolve.tsv
-    |   └── EMEE_ddmmyy.tsv
+    │   ├── Requested_completed_per_day_for_the_month
+    │   ├── Breached_SLAs_time_to_respond.tsv
+    │   ├── Breached_SLAs_time_to_resolve.tsv
+    │   └── EMEE_ddmmyy.tsv
     ├── all_data
-    |   └── Created_requests_per_month_for_all_time.tsv
+    │   └── Created_requests_per_month_for_all_time.tsv
     ├── template
     │   └── Report_template.docx
     └── code
