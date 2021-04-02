@@ -152,9 +152,9 @@ def Add_HelpdeskSection(document, path):
     my_image = document.add_picture(path+'/Current_Statuses.png', width=Inches(6))
 
 
-def Close_document(document, path):
-    document.save(path + '/Report_Jan2021.docx')
-    print("Updated the report and saved in: " + path + '/Report_Jan2021.docx')
+def Close_document(document, path, date):
+    document.save(path + '/Report_' + date + '.docx')
+    print("Updated the report and saved in: " + path + '/Report_' + date + '.docx')
 
 
 def main():
@@ -181,8 +181,10 @@ def main():
     Add_agent2user(document)
 
     Add_HelpdeskSection(document, path)
+    
+    date = date.replace(" ", "_")
 
-    Close_document(document, path)
+    Close_document(document, path, date)
 
 
 if __name__ == "__main__":
